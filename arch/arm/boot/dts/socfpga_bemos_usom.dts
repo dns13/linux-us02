@@ -1,0 +1,53 @@
+/include/ "socfpga_cyclone5_exor.dts"
+
+/ {
+	soc {
+		analogboard_0: bemos@ff240000 {
+			compatible = "bstsns,analogboard-2.3.7", "bstsns,analogboard";
+			reg = <0xFF240000 0x00000400>,
+				<0xC0020000 0x00000008>,
+				<0xFF280000 0x00000040>,
+				<0xFF240400 0x00000040>,
+				<0xC0070000 0x00000008>,
+				<0xC0090000 0x00000008>,
+				<0xC00A0000 0x00000008>,
+				<0xC00B0000 0x00000008>,
+				<0xFF221000 0x00000020>,
+				<0xFF271000 0x00000020>,
+				<0xFF291000 0x00000020>,
+				<0xFF2A1000 0x00000020>,
+				<0xFF2B1000 0x00000020>,
+				<0xFF210010 0x00000008>,
+				<0xFF240500 0x00000008>,
+				<0xFF240600 0x00000008>;
+			reg-names = "ab", "fifo", "temp", "i2c", "ks", "int", "rt1", "rt2", "fifo_csr", "ks_csr", "int_csr", "rt1_csr", "rt2_csr", "board_temp", "cl0", "cl1";
+			interrupts = <0 45 4>, <0 42 4>, <0 46 4>, <0 47 4>, <0 48 4>;
+		}; //end bemos@ff240000 (analogboard_0)
+	};
+};
+
+&i2c0 {
+	temp@48 {
+		compatible = "national,tmp75";
+		reg = <0x4C>;
+	};
+};
+
+&gmac0 {
+	phy-mode = "mii";
+	snps,phy-addr = <0x00>;
+	rxd0-skew-ps = <0>;
+	rxd1-skew-ps = <0>;
+	rxd2-skew-ps = <0>;
+	rxd3-skew-ps = <0>;
+	txen-skew-ps = <0>;
+	txc-skew-ps = <2600>;
+	rxdv-skew-ps = <0>;
+	rxc-skew-ps = <2000>;
+	max-frame-size = <3800>;
+	status = "okay";
+};
+
+&gmac1 {
+	status = "disabled";
+};
