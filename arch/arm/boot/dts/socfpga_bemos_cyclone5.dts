@@ -1,4 +1,4 @@
-/include/ "socfpga_cyclone5.dts"
+/include/ "socfpga_cyclone5_sockit.dts"
 
 / {
 	soc {
