@@ -1,0 +1,55 @@
+/include/ "socfpga_cyclone5.dts"
+
+/ {
+	soc {
+		analogboard_0: bemos@ff240000 {
+			compatible = "bstsns,zim";
+		}; //end bemos@ff240000 (analogboard_0)
+		
+		spi_temp: spi@ff201040 {
+			compatible = "altr,spi-15.1", "altr,spi-1.0";
+			reg = <0xff201040 0x00000020>;
+			interrupt-parent = <&intc>;
+			interrupts = <0 53 4>;
+			clocks = <&l4_main_clk>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			bus-num = <0>;
+			num-chipselect = <1>;
+			status = "okay";
+
+			max31865@0 {
+				compatible = "max31865";
+				reg = <0>;	/* chip select */
+				spi-max-frequency = <100000000>;
+				enable-dma = <1>;
+			};
+		};
+	};
+};
+
+&i2c0 {
+	temp@48 {
+		compatible = "national,tmp75";
+		reg = <0x4C>;
+	};
+};
+
+&gmac0 {
+	phy-mode = "mii";
+	snps,phy-addr = <0x00>;
+	rxd0-skew-ps = <0>;
+	rxd1-skew-ps = <0>;
+	rxd2-skew-ps = <0>;
+	rxd3-skew-ps = <0>;
+	txen-skew-ps = <0>;
+	txc-skew-ps = <2600>;
+	rxdv-skew-ps = <0>;
+	rxc-skew-ps = <2000>;
+	max-frame-size = <3800>;
+	status = "okay";
+};
+
+&gmac1 {
+	status = "disabled";
+};
