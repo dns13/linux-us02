@@ -8,7 +8,7 @@
 		
 		spi_temp: spi@ff201040 {
 			compatible = "altr,spi-15.1", "altr,spi-1.0";
-			reg = <0xff201040 0x00000020>;
+			reg = <0xff201040 0x20>;
 			interrupt-parent = <&intc>;
 			interrupts = <0 53 4>;
 			clocks = <&l4_main_clk>;
@@ -24,6 +24,27 @@
 				spi-max-frequency = <100000000>;
 				enable-dma = <1>;
 			};
+		};
+		
+		pio_ab: gpio@ff201060 {
+			compatible = "altr,pio-1.0";
+			reg = <0xff201060 0x10>;
+			interrupts = <0 54 4>;
+			altr,gpio-bank-width = <16>;
+			altr,interrupt_type = <1>;
+			#gpio-cells = <1>;
+			gpio-controller;
+			#interrupt-cells = <1>;
+			interrupt-controller;
+		};
+		
+		uart_external: serial@ff290000 {
+			compatible = "ALTR,uart-1.0", "altr,uart-1.0";
+			reg = <0xff290000 0x20>;
+			interrupt-parent = <&intc>;
+			interrupts = <0 55 4>;
+			current-speed = <115200>;
+			clock-frequency = <50000000>;
 		};
 	};
 };
