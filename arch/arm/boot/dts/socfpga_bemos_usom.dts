@@ -24,6 +24,15 @@
 			reg-names = "ab", "fifo", "temp", "i2c", "ks", "int", "rt1", "rt2", "fifo_csr", "ks_csr", "int_csr", "rt1_csr", "rt2_csr", "board_temp", "cl0", "cl1", "version";
 			interrupts = <0 45 4>, <0 42 4>, <0 46 4>, <0 47 4>, <0 48 4>, <0 40 4>, <0 41 4>;
 		}; //end bemos@ff240000 (analogboard_0)
+		
+		uart_external: serial@ff290000 {
+			compatible = "ALTR,uart-1.0", "altr,uart-1.0";
+			reg = <0xff290000 0x20>;
+			interrupt-parent = <&intc>;
+			interrupts = <0 55 4>;
+			current-speed = <115200>;
+			clock-frequency = <50000000>;
+		};
 	};
 };
 
