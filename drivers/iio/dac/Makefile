@@ -16,3 +16,4 @@ obj-$(CONFIG_AD5791) += ad5791.o
 obj-$(CONFIG_AD5686) += ad5686.o
 obj-$(CONFIG_MAX517) += max517.o
 obj-$(CONFIG_MCP4725) += mcp4725.o
+obj-$(CONFIG_TI_DAC5571) += ti-dac5571.o
