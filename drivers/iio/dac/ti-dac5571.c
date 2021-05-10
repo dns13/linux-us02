@@ -221,8 +221,8 @@ static const struct iio_chan_spec_ext_info dac5571_ext_info[] = {
 	.type = IIO_VOLTAGE,					\
 	.channel = (chan),					\
 	.address = (chan),					\
-	.indexed = true,					\
-	.output = true,						\
+	.indexed = 1,					\
+	.output = 1,						\
 	.datasheet_name = name,					\
 	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
 	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
@@ -292,17 +292,9 @@ static int dac5571_write_raw(struct iio_dev *indio_dev,
 	}
 }
 
-static int dac5571_write_raw_get_fmt(struct iio_dev *indio_dev,
-				     struct iio_chan_spec const *chan,
-				     long mask)
-{
-	return IIO_VAL_INT;
-}
-
 static const struct iio_info dac5571_info = {
 	.read_raw = dac5571_read_raw,
 	.write_raw = dac5571_write_raw,
-	.write_raw_get_fmt = dac5571_write_raw_get_fmt,
 };
 
 static int dac5571_probe(struct i2c_client *client,
