@@ -439,23 +439,31 @@ static int altr_i2c_probe(struct platform_device *pdev)
 	init_completion(&idev->msg_complete);
 	spin_lock_init(&idev->lock);
 
-	// calls to device_property_read_u32 are not possible with kernel 3.10
-	// thus disabled for now until a good way to backport this features is found
-	// fifo needs to be default size of 4 and clock rate is fixed to 100kHz
-	//val = device_property_read_u32(idev->dev, "fifo-size",
-	//			       &idev->fifo_size);
-	//if (val) {
+	if (pdev->dev.of_node) {
+		val = of_property_read_u32(pdev->dev.of_node, "fifo-size",
+					   &idev->fifo_size);
+					   
+		if (val) {
+			dev_err(&pdev->dev, "FIFO size set to default of %d\n",
+				ALTR_I2C_DFLT_FIFO_SZ);
+			idev->fifo_size = ALTR_I2C_DFLT_FIFO_SZ;
+		}
+		
+		val = of_property_read_u32(pdev->dev.of_node, "clock-frequency",
+					   &idev->bus_clk_rate);
+					   
+		if (val) {
+			dev_err(&pdev->dev, "Default to 100kHz\n");
+			idev->bus_clk_rate = 100000;	/* default clock rate */
+		}
+	} else {
 		dev_err(&pdev->dev, "FIFO size set to default of %d\n",
 			ALTR_I2C_DFLT_FIFO_SZ);
 		idev->fifo_size = ALTR_I2C_DFLT_FIFO_SZ;
-	//}
-
-	//val = device_property_read_u32(idev->dev, "clock-frequency",
-	//			       &idev->bus_clk_rate);
-	//if (val) {
+		
 		dev_err(&pdev->dev, "Default to 100kHz\n");
-		idev->bus_clk_rate = 100000;	/* default clock rate */
-	//}
+			idev->bus_clk_rate = 100000;	/* default clock rate */
+	}
 
 	if (idev->bus_clk_rate > 400000) {
 		dev_err(&pdev->dev, "invalid clock-frequency %d\n",
