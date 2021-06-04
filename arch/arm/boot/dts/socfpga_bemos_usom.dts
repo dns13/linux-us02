@@ -44,9 +44,22 @@
 };
 
 &i2c0 {
+	i2c-sda-falling-time-ns = <10000>;
+	i2c-scl-falling-time-ns = <10000>;
+
 	temp@48 {
 		compatible = "national,tmp75";
 		reg = <0x4C>;
+	};
+
+	eeprom@51 {
+		compatible = "atmel,24c04";
+		reg = <0x51>;
+		pagesize = <16>;
+	};
+	
+	lcd: lcd@28 {
+		status = "disabled";
 	};
 };
 
