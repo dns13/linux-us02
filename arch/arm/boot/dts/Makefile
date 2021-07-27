@@ -180,6 +180,7 @@ dtb-$(CONFIG_ARCH_SOCFPGA) += socfpga_cyclone5.dtb \
 	socfpga_ice.dtb \
 	socfpga_bemos_cyclone5.dtb \
 	socfpga_bemos_usom.dtb \
+	socfpga_bemos_v8.dtb
 	socfpga_zim_usom.dtb \
 	socfpga_vt.dtb
 dtb-$(CONFIG_ARCH_SPEAR13XX) += spear1310-evb.dtb \
