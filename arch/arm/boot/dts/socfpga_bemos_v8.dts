@@ -1,0 +1,200 @@
+/include/ "socfpga_cyclone5.dts"
+
+/ {
+	leds {
+		status = "disabled";
+	};
+	
+	soc {
+		vdd_3v3: fixedregulator@0 {
+			compatible = "regulator-fixed";
+			regulator-name = "vdd_3v3";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-always-on;
+		};
+		
+		clocks {
+			bone_20: bone_20 {
+				compatible = "fixed-clock";
+				#clock-cells = <0>;
+				clock-frequency = <20000000>;
+			};
+
+			bone_50: bone_50 {
+				compatible = "fixed-clock";
+				#clock-cells = <0>;
+				clock-frequency = <50000000>;
+			};
+		};
+		
+		spi_temp: spi@ff201060 {
+			compatible = "altr,spi-15.1", "altr,spi-1.0";
+			reg = <0xff201060 0x20>;
+			interrupt-parent = <&intc>;
+			interrupts = <0 53 4>;
+			clocks = <&bone_20>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			bus-num = <0>;
+			num-chipselect = <2>;
+			status = "okay";
+
+			tm_tx: max31865@0 {
+				compatible = "max31865";
+				reg = <0>;	/* chip select */
+				spi-max-frequency = <5000000>;
+				enable-dma = <1>;
+				#io-channel-cells = <0>;
+			};
+			
+			tm_rx: max31865@1 {
+				compatible = "max31865";
+				reg = <1>;	/* chip select */
+				spi-max-frequency = <5000000>;
+				enable-dma = <1>;
+				#io-channel-cells = <0>;
+			};
+		};
+		
+		analogboard_0: bemos {
+			compatible = "bstsns,abv8";
+
+			i2c-external = <&i2c_external>;
+			i2c-ab = <&i2c_ab>;
+
+			io-channels = <&dac_level>,
+						  <&tm_tx>,
+						  <&tm_rx>,
+						  <&ab_ai 0>,
+						  <&ab_ai 1>;
+
+			io-channel-names = "level",
+							   "tm_tx",
+							   "tm_rx",
+							   "ai0",
+							   "ai1";
+			
+			interrupt-parent = <&intc>;			
+			interrupts = <0 41 4>, /* connected */
+						 <0 42 4>, /* ks0 */
+						 <0 45 4>, /* fifo0 */
+						 <0 46 4>, /* fifo1 */
+						 <0 47 4>, /* fifo2 */
+						 <0 48 4>, /* fifo3 */
+						 <0 56 4>, /* ae_dtc */
+						 <0 57 4>; /* trigger_in */
+		}; //end bemos (analogboard_0)
+		
+		i2c_ab: i2c@ff2c0040 {
+			compatible = "altr,softip-i2c-v1.0";
+			reg = <0xff2c0040 0x40>;
+			interrupt-parent = <&intc>;
+			interrupts = <0 51 4>;
+			clocks = <&bone_50>;
+			fifo-size = <4>;
+			clock-frequency = <100000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			
+			dac_level: dac5571@4c {
+				compatible = "ti,dac5571";
+				reg = <0x4c>;
+				vref-supply = <&vdd_3v3>;
+				#io-channel-cells = <0>;
+			};
+			
+			eeprom@50 {
+				compatible = "atmel,24c04";
+				reg = <0x50>;
+				pagesize = <16>;
+			};
+			
+			ab_ai: mcp3427@68 {
+				compatible = "microchip,mcp3427";
+				reg = <0x68>;
+				#io-channel-cells = <1>;
+			};
+		};
+
+		i2c_external: i2c@ff2c0000 {
+			compatible = "altr,softip-i2c-v1.0";
+			reg = <0xff2c0000 0x40>;
+			interrupt-parent = <&intc>;
+			interrupts = <0 50 4>;
+			clocks = <&bone_50>;
+			fifo-size = <4>;
+			clock-frequency = <100000>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			eeprom@50 {
+				compatible = "atmel,24c04";
+				reg = <0x50>;
+				pagesize = <16>;
+			};
+		};
+		
+		uart_external: serial@ff290000 {
+			compatible = "ALTR,uart-1.0", "altr,uart-1.0";
+			reg = <0xff290000 0x20>;
+			interrupt-parent = <&intc>;
+			interrupts = <0 55 4>;
+			current-speed = <115200>;
+			clock-frequency = <50000000>;
+		};
+		
+		jtag_uart: serial@ff200008 {
+			compatible = "ALTR,juart-13.1", "ALTR,juart-1.0", "altr,juart-1.0";
+			reg = <0xff200008 0x8>;
+			interrupt-parent = <&intc>;
+			interrupts = <0 40 4>;
+		};
+	};
+};
+
+&i2c0 {
+	i2c-sda-falling-time-ns = <10000>;
+	i2c-scl-falling-time-ns = <10000>;
+	
+	temp@48 {
+		compatible = "national,tmp75";
+		reg = <0x4C>;
+	};
+	
+	eeprom@51 {
+		compatible = "atmel,24c04";
+		reg = <0x51>;
+		pagesize = <16>;
+	};
+	
+	lcd: lcd@28 {
+		status = "disabled";
+	};
+};
+
+&uart1 {
+	status = "disabled";
+};
+
+&gmac0 {
+	phy-mode = "mii";
+	phy-addr = <0x00>;
+	snps,phy-addr = <0x00>;
+	rxd0-skew-ps = <0>;
+	rxd1-skew-ps = <0>;
+	rxd2-skew-ps = <0>;
+	rxd3-skew-ps = <0>;
+	txen-skew-ps = <0>;
+	txc-skew-ps = <2600>;
+	rxdv-skew-ps = <0>;
+	rxc-skew-ps = <2000>;
+	max-frame-size = <3800>;
+	status = "okay";
+	reset0 = <&agpio0 0 0>;
+	reset1 = <&agpio0 1 0>;
+};
+
+&gmac1 {
+	status = "disabled";
+};
