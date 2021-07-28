@@ -83,7 +83,8 @@
 						 <0 47 4>, /* fifo2 */
 						 <0 48 4>, /* fifo3 */
 						 <0 56 4>, /* ae_dtc */
-						 <0 57 4>; /* trigger_in */
+						 <0 57 4>, /* trigger_in */
+						 <0 44 4>; /* ab_pio */
 		}; //end bemos (analogboard_0)
 		
 		i2c_ab: i2c@ff2c0040 {
