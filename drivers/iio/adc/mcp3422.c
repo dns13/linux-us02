@@ -141,6 +141,7 @@ static int mcp3422_read_channel(struct mcp3422 *adc,
 		config |= MCP3422_CHANNEL_VALUE(req_channel);
 		config &= ~MCP3422_PGA_MASK;
 		config |= MCP3422_PGA_VALUE(adc->pga[req_channel]);
+		config |= MCP3422_CONT_SAMPLING;
 		ret = mcp3422_update_config(adc, config);
 		if (ret < 0) {
 			mutex_unlock(&adc->lock);
@@ -214,6 +215,7 @@ static int mcp3422_write_raw(struct iio_dev *iio,
 				config |= MCP3422_CHANNEL_VALUE(req_channel);
 				config &= ~MCP3422_PGA_MASK;
 				config |= MCP3422_PGA_VALUE(adc->pga[req_channel]);
+				config |= MCP3422_CONT_SAMPLING;
 
 				return mcp3422_update_config(adc, config);
 			}
@@ -244,6 +246,7 @@ static int mcp3422_write_raw(struct iio_dev *iio,
 		config |= MCP3422_CHANNEL_VALUE(req_channel);
 		config &= ~MCP3422_SRATE_MASK;
 		config |= MCP3422_SAMPLE_RATE_VALUE(temp);
+		config |= MCP3422_CONT_SAMPLING;
 
 		return mcp3422_update_config(adc, config);
 
