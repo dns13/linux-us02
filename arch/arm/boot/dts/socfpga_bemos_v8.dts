@@ -167,6 +167,7 @@
 		compatible = "atmel,24c04";
 		reg = <0x51>;
 		pagesize = <16>;
+		size = <256>;
 	};
 	
 	lcd: lcd@28 {
